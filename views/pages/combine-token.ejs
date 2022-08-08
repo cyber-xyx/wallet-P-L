@@ -1,0 +1,138 @@
+<% include ../partials/header %>
+<% include ../partials/sidebar %>
+ 
+  <!-- Main content -->
+  <div class="main-content">
+    <br><br> <br><br> <br><br>
+    <!-- Page content -->
+    <div class="container-fluid mt--7">
+      <!-- Table -->
+      <div class="row">
+        <div class="col">
+          <div class="card shadow">
+            <div class="card-header border-0">
+              <div class="row">
+                <div class="col">
+                  <h3 class="mb-0">Combine Tokens Symbol: </h3>
+                </div>
+
+                
+              </div>
+            </div>
+
+            
+
+            <div class="table-responsive" style="padding: 16px;">
+              <form method="post" name="myForm" action="/update-combine-token" onsubmit="return validateForm()">
+              <div class="container">
+
+                <div class="row">
+                  <div class="col-md-5 text-center"><h4>FROM</h4></div>
+                  <div class="col-md-2 text-center"></div>
+                  <div class="col-md-5 text-center"><h4>TO</h4></div>
+                </div>
+
+                <div class="row">
+
+                  <div class="col-md-5" style="border: 1px solid #ddd; padding: 16px;">
+                    <div class="container">
+                    
+                      <div class="row">
+                        <% tokens.forEach(function(token){ %>
+                        <div class="col col-md-6">
+                          <div class="form-check ">
+                            <input class="form-check-input token_symbol_from" type="checkbox" name="token_symbol_from[]" value="<%= token.token_symbol %>">
+                            <label class="form-check-label" for="flexCheckDefault"><%= token.token_symbol %></label>
+                          </div> 
+                        </div>
+                        <% })%>
+
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-2 text-center" style="margin-top: 30%;"><input type="submit" name="combine" class="btn btn-success" value="Combine" /></div>
+
+                  <div class="col-md-5" style="border: 1px solid #ddd; padding: 16px;">
+                    <div class="container">
+                      
+                      <div class="row">
+                        <% tokens.forEach(function(token){ %>
+                        <div class="col col-md-6">
+                          <div class="form-check ">
+                            <input onclick="onlyOne(this)" class="form-check-input token_symbol_to" type="checkbox" name="token_symbol_to" value="<%= token.token_symbol %>" id="token_symbol_to">
+                            <label class="form-check-label" for="flexCheckDefault"><%= token.token_symbol %></label>
+                          </div> 
+                        </div>
+                        <% })%>
+
+                      </div>
+                    </div>
+                  </div>
+                
+                
+                </div>
+              </div>
+            </form>
+           
+           
+            </div>
+
+            <br> <br>
+
+
+
+           
+
+          </div>
+        </div>
+      </div>
+     
+      <!-- Footer -->
+      <% include ../partials/footer %>
+  <script>
+    function valWalletAddress(){
+      address = document.getElementById("wallet_address").value;
+        
+        if(address == 0){
+          window.location.href = '/consolidated-report';
+        }else{
+          window.location.href = '/consolidated-report?wallet_address='+address;
+        }
+        
+    } 
+    function onlyOne(checkbox) {
+        var checkboxes = document.getElementsByName('token_symbol_to')
+        checkboxes.forEach((item) => {
+            if (item !== checkbox) item.checked = false
+        })
+    }
+    function validateForm() {
+      var inputElements = document.getElementsByClassName('token_symbol_from');
+      var checkedValueFrom = [];
+      for(var i=0; inputElements[i]; ++i){
+        console.log(inputElements[i]);
+        if(inputElements[i].checked){
+          checkedValueFrom.push(inputElements[i].value);
+        }
+      }
+    
+      if(checkedValueFrom == ''){
+        alert("Please select a symbol from list");
+        return false;
+      }else{
+        var inputElements = document.getElementsByClassName('token_symbol_to');
+        var checkedValueTo=[];
+        for(var i=0; inputElements[i]; ++i){
+          console.log(inputElements[i]);
+          if(inputElements[i].checked){
+            checkedValueTo.push(inputElements[i].value);
+          }
+        }
+        if(checkedValueTo == ''){
+          alert("Please select a symbol to list");
+          return false;
+        }
+      }
+
+    }
+    </script>

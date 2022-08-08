@@ -1,0 +1,303 @@
+<% include ../partials/header %>
+<% include ../partials/sidebar %>
+ 
+  <!-- Main content -->
+  <div class="main-content">
+    <br><br> <br><br> <br><br>
+    <!-- Page content -->
+    <div class="container-fluid mt--7">
+      <!-- Table -->
+      <div class="row">
+        <div class="col">
+          <div class="card shadow">
+            <div class="card-header border-0">
+              <div class="row">
+                <div class="col">
+                  <h3 class="mb-0">Reports </h3>
+                </div>
+
+                <div class="col">
+                  <h5 class="mb-0">Choose Wallet Address </h5>
+                  <select id="wallet_address" class="form-control form-control-alternative" onchange='valWalletAddress()'>
+                    <option value="0">Select</option>
+                    <% walletAddress.forEach(function(address){ %>
+                    <option value=<%= address.wallet_address %> <%= address.wallet_address == selected_wallet_address ? 'selected' : ''%> ><%= address.wallet_address %></option>
+                    <% })%>
+                  </select>
+                </div>
+
+               
+              </div>
+            </div>
+
+            
+
+            <div class="table-responsive">
+
+              <div class="row container">
+                <div class="col">
+                  <h3 class="mb-0">ERC20 </h3>
+                </div>
+              </div>
+              <br>
+           
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col" style="background-color: #4472c3; color: white;"></th>
+                    <th scope="col" colspan="3" style="background-color: #4472c3; color: white;">Current Holding</th>
+                    
+                    <th scope="col" colspan="3" style="background-color: #ed7d31; color: white;">Total tokens bought</th>
+                    <th scope="col" colspan="3" style="background-color: #00b04f; color: white;">Total tokens sold</th>
+                    <th scope="col" colspan="2" style="background-color: #ffc001; color: white;">P&L</th>
+                  </tr>
+                  <tr>
+                    <th scope="col" style="background-color: #4472c3; color: white;">Token</th>
+                    <th scope="col" style="background-color: #4472c3; color: white;"># of token</th>
+                    <th scope="col" style="background-color: #4472c3; color: white;">US $per token</th>
+                    <th scope="col" style="background-color: #4472c3; color: white;">Total market value (US$)</th>
+
+                    <th scope="col" style="background-color: #ed7d31; color: white;"># of token</th>
+                    <th scope="col" style="background-color: #ed7d31; color: white;">Average US$ per token</th>
+                    <th scope="col" style="background-color: #ed7d31; color: white;">Total bought value</th>
+
+                    <th scope="col" style="background-color: #00b04f; color: white;"># of token</th>
+                    <th scope="col" style="background-color: #00b04f; color: white;">Average US$ per token</th>
+                    <th scope="col" style="background-color: #00b04f; color: white;">Total sold value</th>
+                    
+
+                    <th scope="col" style="background-color: #ffc001; color: white;">Realised P&L</th>
+                    <th scope="col" style="background-color: #ffc001; color: white;">Unrealised P&L</th>
+
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <% var sumTotalMarketValue = 0; %> 
+                  <% var sumTotalBoughtValue = 0; %> 
+                  <% var sumTotalSoldValue = 0; %> 
+                  <% var sumTotalRelizedValue = 0; %> 
+                  <% var sumTotalUnRelizedValue = 0; %>
+
+                  <% ERC20Transactions.forEach(function(ERC20Transaction){ %>
+                  <tr>
+
+                    <td>
+                      <a target="_blank" href=/breakup/<%= ERC20Transaction.token_name %>/<%= selected_wallet_address %>/tokentx><%= ERC20Transaction.token_name %></a>
+                    </td>
+                    <td>
+                      <%= ERC20Transaction.buytotal %>
+                    </td>
+                    <td>
+                      <%= ERC20Transaction.nOfToken %>
+                    </td>
+                    <td>
+                      <%= ERC20Transaction.totalMarketValue %>
+                      <% sumTotalMarketValue += ERC20Transaction.totalMarketValue != 'Nil' ? ERC20Transaction.totalMarketValue : 0; %>
+                    </td>
+
+
+                    <td>
+                      <%= ERC20Transaction.sumOfAllBuy == 'null' ? 'Nil' : ERC20Transaction.sumOfAllBuy %>
+                    </td>
+                    <td>
+                      <%= ERC20Transaction.averageOfBuy %>
+                    </td>
+                    <td>
+                      <%= ERC20Transaction.totalBoughtValue %>
+                      <% sumTotalBoughtValue += ERC20Transaction.totalBoughtValue != 'Nil' ? ERC20Transaction.totalBoughtValue : 0; %>
+                    </td>
+                     
+                    <td>
+                      <%= ERC20Transaction.sumOfAllSell %>
+                    </td>
+                    <td>
+                      <%= ERC20Transaction.averageOfSell %>
+                    </td>
+                    <td>
+                      <%= ERC20Transaction.totalSoldValue %>
+                      <% sumTotalSoldValue += ERC20Transaction.totalSoldValue != 'Nil' ? ERC20Transaction.totalSoldValue : 0; %>
+                    </td>
+                      
+                    <td>
+                      <%= ERC20Transaction.totalRelizedValue %>
+                      <% sumTotalRelizedValue += ERC20Transaction.totalRelizedValue != 'Nil' ? ERC20Transaction.totalRelizedValue : 0; %>
+                    </td>
+                    <td>
+                      <%= ERC20Transaction.totalUnRelizedValue %>
+                      <% sumTotalUnRelizedValue += ERC20Transaction.totalUnRelizedValue != 'Nil' ? ERC20Transaction.totalUnRelizedValue : 0; %>
+                    </td>
+                    
+                    
+                  </tr>
+                  <% })%>
+                  <tr>
+                    <th scope="col" style="background-color: #00205f; color: white;"></th>
+                    <th scope="col" style="background-color: #00205f; color: white;"></th>
+                    <th scope="col" style="background-color: #00205f; color: white;"></th>
+                    <th scope="col" style="background-color: #00205f; color: white;">$<%= parseFloat(sumTotalMarketValue).toFixed(2) %></th>
+
+                    <th scope="col" style="background-color: #00205f; color: white;"></th>
+                    <th scope="col" style="background-color: #00205f; color: white;"></th>
+                    <th scope="col" style="background-color: #00205f; color: white;">$<%= parseFloat(sumTotalBoughtValue).toFixed(2) %></th>
+
+                    <th scope="col" style="background-color: #00205f; color: white;"></th>
+                    <th scope="col" style="background-color: #00205f; color: white;"></th>
+                    <th scope="col" style="background-color: #00205f; color: white;">$<%= parseFloat(sumTotalSoldValue).toFixed(2) %></th>
+                    
+
+                    <th scope="col" style="background-color: #00205f; color: white;">$<%= parseFloat(sumTotalRelizedValue).toFixed(2) %></th>
+                    <th scope="col" style="background-color: #00205f; color: white;">$<%= parseFloat(sumTotalUnRelizedValue).toFixed(2) %></th>
+
+
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <br> <br>
+
+
+
+            <div class="table-responsive">
+
+              <div class="row container">
+                <div class="col">
+                  <h3 class="mb-0">ERC721 </h3>
+                </div>
+              </div>
+              <br>
+           
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col" style="background-color: #4472c3; color: white;"></th>
+                    <th scope="col" colspan="3" style="background-color: #4472c3; color: white;">Current Holding</th>
+                    
+                    <th scope="col" colspan="3" style="background-color: #ed7d31; color: white;">Total tokens bought</th>
+                    <th scope="col" colspan="3" style="background-color: #00b04f; color: white;">Total tokens sold</th>
+                    <th scope="col" colspan="2" style="background-color: #ffc001; color: white;">P&L</th>
+                  </tr>
+                  <tr>
+                    <th scope="col" style="background-color: #4472c3; color: white;">Token</th>
+                    <th scope="col" style="background-color: #4472c3; color: white;"># of token</th>
+                    <th scope="col" style="background-color: #4472c3; color: white;">US $per token</th>
+                    <th scope="col" style="background-color: #4472c3; color: white;">Total market value (US$)</th>
+            
+                    <th scope="col" style="background-color: #ed7d31; color: white;"># of token</th>
+                    <th scope="col" style="background-color: #ed7d31; color: white;">Average US$ per token</th>
+                    <th scope="col" style="background-color: #ed7d31; color: white;">Total bought value</th>
+            
+                    <th scope="col" style="background-color: #00b04f; color: white;"># of token</th>
+                    <th scope="col" style="background-color: #00b04f; color: white;">Average US$ per token</th>
+                    <th scope="col" style="background-color: #00b04f; color: white;">Total sold value</th>
+                    
+            
+                    <th scope="col" style="background-color: #ffc001; color: white;">Realised P&L</th>
+                    <th scope="col" style="background-color: #ffc001; color: white;">Unrealised P&L</th>
+            
+            
+                  </tr>
+                </thead>
+                <tbody>
+                  <% var sumTotalMarketValue = 0; %> 
+                  <% var sumTotalBoughtValue = 0; %> 
+                  <% var sumTotalSoldValue = 0; %> 
+                  <% var sumTotalRelizedValue = 0; %> 
+                  <% var sumTotalUnRelizedValue = 0; %>
+            
+                  <% ERC721Transactions.forEach(function(ERC721Transaction){ %>
+                  <tr>
+            
+                    <td>
+                      <a href=/breakup/<%= ERC721Transaction.token_name %>/<%= selected_wallet_address %>/tokennfttx><%= ERC721Transaction.token_name %></a>
+                    </td>
+                    <td>
+                      <%= ERC721Transaction.buytotal %>
+                    </td>
+                    <td>
+                      <%= ERC721Transaction.nOfToken %>
+                    </td>
+                    <td>
+                      <%= ERC721Transaction.totalMarketValue %>
+                      <% sumTotalMarketValue += ERC721Transaction.totalMarketValue != 'Nil' ? ERC721Transaction.totalMarketValue : 0; %>
+                    </td>
+            
+            
+                    <td>
+                      <%= ERC721Transaction.sumOfAllBuy == 'null' ? 'Nil' : ERC721Transaction.sumOfAllBuy %>
+                    </td>
+                    <td>
+                      <%= ERC721Transaction.averageOfBuy %>
+                    </td>
+                    <td>
+                      <%= ERC721Transaction.totalBoughtValue %>
+                      <% sumTotalBoughtValue += ERC721Transaction.totalBoughtValue != 'Nil' ? ERC721Transaction.totalBoughtValue : 0; %>
+                    </td>
+                     
+                    <td>
+                      <%= ERC721Transaction.sumOfAllSell %>
+                    </td>
+                    <td>
+                      <%= ERC721Transaction.averageOfSell %>
+                    </td>
+                    <td>
+                      <%= ERC721Transaction.totalSoldValue %>
+                      <% sumTotalSoldValue += ERC721Transaction.totalSoldValue != 'Nil' ? ERC721Transaction.totalSoldValue : 0; %>
+                    </td>
+                      
+                    <td>
+                      <%= ERC721Transaction.totalRelizedValue %>
+                      <% sumTotalRelizedValue += ERC721Transaction.totalRelizedValue != 'Nil' ? ERC721Transaction.totalRelizedValue : 0; %>
+                    </td>
+                    <td>
+                      <%= ERC721Transaction.totalUnRelizedValue %>
+                      <% sumTotalUnRelizedValue += ERC721Transaction.totalUnRelizedValue != 'Nil' ? ERC721Transaction.totalUnRelizedValue : 0; %>
+                    </td>
+                    
+                    
+                  </tr>
+                  <% })%>
+                  <tr>
+                    <th scope="col" style="background-color: #00205f; color: white;"></th>
+                    <th scope="col" style="background-color: #00205f; color: white;"></th>
+                    <th scope="col" style="background-color: #00205f; color: white;"></th>
+                    <th scope="col" style="background-color: #00205f; color: white;">$<%= parseFloat(sumTotalMarketValue).toFixed(2) %></th>
+            
+                    <th scope="col" style="background-color: #00205f; color: white;"></th>
+                    <th scope="col" style="background-color: #00205f; color: white;"></th>
+                    <th scope="col" style="background-color: #00205f; color: white;">$<%= parseFloat(sumTotalBoughtValue).toFixed(2) %></th>
+            
+                    <th scope="col" style="background-color: #00205f; color: white;"></th>
+                    <th scope="col" style="background-color: #00205f; color: white;"></th>
+                    <th scope="col" style="background-color: #00205f; color: white;">$<%= parseFloat(sumTotalSoldValue).toFixed(2) %></th>
+                    
+            
+                    <th scope="col" style="background-color: #00205f; color: white;">$<%= parseFloat(sumTotalRelizedValue).toFixed(2) %></th>
+                    <th scope="col" style="background-color: #00205f; color: white;">$<%= parseFloat(sumTotalUnRelizedValue).toFixed(2) %></th>
+            
+            
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+     
+      <!-- Footer -->
+      <% include ../partials/footer %>
+      <script>
+        function valWalletAddress(){
+          address = document.getElementById("wallet_address").value;
+           
+            if(address == 0){
+              window.location.href = '/consolidated-report';
+            }else{
+              window.location.href = '/consolidated-report?wallet_address='+address;
+            }
+            
+        } 
+        </script>

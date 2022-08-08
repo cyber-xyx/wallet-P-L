@@ -1,0 +1,90 @@
+<% include ../partials/header %>
+<% include ../partials/sidebar %>
+ 
+  <!-- Main content -->
+  <div class="main-content">
+    <br><br> <br><br> <br><br>
+    <!-- Page content -->
+    <div class="container-fluid mt--7">
+      <!-- Table -->
+      <div class="row">
+        <div class="col">
+          <div class="card shadow">
+            <div class="card-header border-0">
+             
+                <div class="row">
+                  <div class="col">
+                    <h3 class="mb-0">Delete Wallet Address </h3>
+                  </div>
+                
+                </div>
+                <br><br>
+
+                <div class="row">
+                  <div class="col col-md-3"></div>
+                  <div class="col">
+                    <h5 class="mb-0">Choose Wallet Address </h5>
+                    <select id="wallet_address" class="form-control form-control-alternative" >
+                      <option value="0">Select</option>
+                      <% walletAddress.forEach(function(address){ %>
+                        <% if(selectedWalletAddress != address.wallet_address && selectedTokenAction == undefined){ %>
+                          <option value=<%= address.wallet_address %>><%= address.wallet_address %></option>
+                       <% } %>
+                      
+                      <% })%>
+                    </select>
+                  </div>
+                  <div class="col col-md-3"></div>
+                </div>
+                <br>
+
+
+
+                <div class="row">
+                  <div class="col col-md-3"></div>
+                  <div class="col">
+                    <h5 class="mb-0">Choose Token Type</h5>
+                    <select id="token_action" class="form-control form-control-alternative">
+                      <option value="0">Select</option>
+                      <% if(walletAddress.length > 0){ %>
+                        <option value="tokentx"> ERC20</option>
+                        <option value="tokennfttx">ERC721</option>
+                     <% } %>
+                      
+                    </select>
+                  </div>
+                  <div class="col col-md-3"></div>
+                </div>
+
+                
+                <div class="col-lg-12 text-center col-md-3">
+                  <button class="btn btn-danger mt-4 mb-4 col-md-2" onclick="delWalletAddress()">Delete</button>
+                </div>
+
+               
+
+            </div>
+            
+          </div>
+        </div>
+      </div>
+     
+      <!-- Footer -->
+      <% include ../partials/footer %>
+    
+
+      <script>
+        function delWalletAddress(){
+
+          var address = document.getElementById("wallet_address").value;
+           var tokenAction = document.getElementById("token_action").value;
+            if(address == 0){
+              alert("Select a wallet address");
+            }else if(address != 0 && tokenAction == 0){
+              window.location.href = '/delete-wallet-transactions?wallet_address='+address;
+            }else if(address != 0 && tokenAction != 0){
+              window.location.href = '/delete-wallet-transactions?wallet_address='+address+'&token_action='+tokenAction;
+            }
+         
+        } 
+        </script>
